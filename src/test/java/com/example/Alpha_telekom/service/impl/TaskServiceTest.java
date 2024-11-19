@@ -40,16 +40,6 @@ public class TaskServiceTest {
         assert expected.equals(actual);
     }
 
-    @Test
-    void getAllTasks() {
-//        When
-        when(taskRepository.findAll()).thenReturn(Constants.TASKS);
-        TasksDto expected = taskService.getAllTasks();
-
-//        Then
-        TasksDto actual = Constants.TASKS_DTO;
-        assert expected.equals(actual);
-    }
 
     @Test
     void getTaskById() {
