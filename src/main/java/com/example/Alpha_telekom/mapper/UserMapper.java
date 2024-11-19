@@ -1,23 +1,22 @@
 package com.example.Alpha_telekom.mapper;
 
-import com.example.Alpha_telekom.dto.task.TasksDto;
 import com.example.Alpha_telekom.dto.user.UserDto;
 import com.example.Alpha_telekom.dto.user.UsersDto;
-import com.example.Alpha_telekom.entity.User;
+import com.example.Alpha_telekom.entity.MyUser;
 
 import java.util.List;
 
 public class UserMapper {
 
-    public UserDto userToUserDto(User user) {
-        return new UserDto(user.getUsername(), user.getEmail(), user.getId());
+    public UserDto userToUserDto(MyUser myUser) {
+        return new UserDto(myUser.getUsername(), myUser.getEmail(), myUser.getId());
     }
 
-    public User userDtoToUser(UserDto userDto) {
-        return new User(userDto.getUsername(), userDto.getEmail(), userDto.getId());
+    public MyUser userDtoToUser(UserDto userDto) {
+        return new MyUser( userDto.getId(), userDto.getUsername(), userDto.getEmail());
     }
 
-    public UsersDto mapToTasksDto(List<User> users) {
-        return new UsersDto(users.size(), users.stream().map(this::userToUserDto).toList());
+    public UsersDto mapToTasksDto(List<MyUser> myUsers) {
+        return new UsersDto(myUsers.size(), myUsers.stream().map(this::userToUserDto).toList());
     }
 }

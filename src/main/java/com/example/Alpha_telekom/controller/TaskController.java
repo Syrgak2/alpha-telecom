@@ -3,6 +3,7 @@ package com.example.Alpha_telekom.controller;
 import com.example.Alpha_telekom.dto.task.CreateOrUpdateTaskDto;
 import com.example.Alpha_telekom.dto.task.TaskDto;
 import com.example.Alpha_telekom.entity.Task;
+import com.example.Alpha_telekom.exceptions.NotFoundException;
 import com.example.Alpha_telekom.service.TaskService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,7 +48,7 @@ public class TaskController {
             }
     )
     @PostMapping("/create")
-    public ResponseEntity<TaskDto> createTask(@RequestPart("task") CreateOrUpdateTaskDto task) {
+    public ResponseEntity<TaskDto> createTask(@RequestBody CreateOrUpdateTaskDto task) {
         if (task == null) {
             log.error("Task is null");
             return ResponseEntity.badRequest().build();
@@ -86,6 +87,8 @@ public class TaskController {
     public ResponseEntity<TaskDto> getTaskById(@PathVariable("taskId") Long taskId) {
         try {
             return ResponseEntity.ok(taskService.getTaskById(taskId));
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             log.error("Error getting task by id", e);
             return ResponseEntity.internalServerError().build();
@@ -112,6 +115,8 @@ public class TaskController {
     public ResponseEntity<?> getAllTasks() {
         try {
             return ResponseEntity.ok(taskService.getAllTasks());
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             log.error("Error getting all tasks", e);
             return ResponseEntity.internalServerError().build();
@@ -144,6 +149,8 @@ public class TaskController {
         try {
             taskService.deleteTask(taskId);
             return ResponseEntity.ok().build();
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             log.error("Error deleting task", e);
             return ResponseEntity.internalServerError().build();
@@ -172,16 +179,15 @@ public class TaskController {
             )
     })
     @PatchMapping("/{taskId}")
-    public ResponseEntity<TaskDto> updateTask(@PathVariable("taskId") Long taskId, @RequestPart("task") CreateOrUpdateTaskDto task) {
+    public ResponseEntity<TaskDto> updateTask(@PathVariable("taskId") Long taskId, @RequestBody CreateOrUpdateTaskDto task) {
         try {
             return ResponseEntity.ok(taskService.updateTask(taskId, task));
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             log.error("Error updating task", e);
             return ResponseEntity.internalServerError().build();
         }
     }
-
-
-
 
 }

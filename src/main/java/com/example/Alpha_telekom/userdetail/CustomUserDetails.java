@@ -1,6 +1,6 @@
 package com.example.Alpha_telekom.userdetail;
 
-import com.example.Alpha_telekom.entity.User;
+import com.example.Alpha_telekom.entity.MyUser;
 import com.example.Alpha_telekom.service.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,10 +17,10 @@ public class CustomUserDetails implements UserDetailsService {
     }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.getUserByLogin(username);
-        if (user == null) {
+        MyUser myUser = userService.getUserByLogin(username);
+        if (myUser == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        return new MyUserPrincipal(user);
+        return new MyUserPrincipal(myUser);
     }
 }

@@ -4,6 +4,7 @@ import com.example.Alpha_telekom.dto.user.LoginDTO;
 import com.example.Alpha_telekom.dto.user.UserCreateOrUpdateDto;
 import com.example.Alpha_telekom.dto.user.UserDto;
 import com.example.Alpha_telekom.exceptions.NotFoundException;
+import com.example.Alpha_telekom.service.AuthService;
 import com.example.Alpha_telekom.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,8 +21,10 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final AuthService authService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthService authService) {
+        this.authService = authService;
         this.userService = userService;
     }
 
@@ -31,7 +34,7 @@ public class UserController {
     )
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO login) {
-        if (userService.login(login.getUsername(), login.getPassword())) {
+        if (authService.login(login.getUsername(), login.getPassword())) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -60,12 +63,12 @@ public class UserController {
             )
     })
     @PostMapping("/register")
-    public ResponseEntity<UserDto> createUser(@RequestPart UserCreateOrUpdateDto userDto) {
+    public ResponseEntity<UserDto> createUser(@RequestBody UserCreateOrUpdateDto userDto) {
         try {
             if (userDto == null) {
                 return ResponseEntity.badRequest().build();
             }
-            return ResponseEntity.ok(userService.createUser(userDto));
+            return ResponseEntity.ok(authService.createUser(userDto));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
@@ -93,7 +96,7 @@ public class UserController {
             )
     })
     @PatchMapping("/{id}")
-    public ResponseEntity<UserDto> userDtoResponseEntity (@RequestPart UserCreateOrUpdateDto userDto,
+    public ResponseEntity<UserDto> userDtoResponseEntity (@RequestBody UserCreateOrUpdateDto userDto,
                                                           @PathVariable Long id) {
         try {
             return ResponseEntity.ok(userService.updateUser(id, userDto));
